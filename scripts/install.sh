@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-BIN_PATH_INSTALLED="/usr/local/bin/crowdsec-firewall-bouncer"
-BIN_PATH="./crowdsec-firewall-bouncer"
+BIN_PATH_INSTALLED="/usr/local/bin/crowdsec-firewall-bouncer-oht"
+BIN_PATH="./crowdsec-firewall-bouncer-oht"
 CONFIG_DIR="/etc/crowdsec/bouncers/"
 PID_DIR="/var/run/crowdsec/"
-SYSTEMD_PATH_FILE="/etc/systemd/system/crowdsec-firewall-bouncer.service"
+SYSTEMD_PATH_FILE="/etc/systemd/system/crowdsec-firewall-bouncer-oht.service"
 
 # Default pkg manager is apt
 PKG="apt"
@@ -88,7 +88,7 @@ gen_apikey() {
 }
 
 gen_config_file() {
-    API_KEY=${API_KEY} BACKEND=${FW_BACKEND} envsubst < ./config/crowdsec-firewall-bouncer.yaml | install -m 0600 /dev/stdin "${CONFIG_DIR}crowdsec-firewall-bouncer.yaml"
+    API_KEY=${API_KEY} BACKEND=${FW_BACKEND} envsubst < ./config/crowdsec-firewall-bouncer-oht.yaml | install -m 0600 /dev/stdin "${CONFIG_DIR}crowdsec-firewall-bouncer-oht.yaml"
 }
 
 check_ipset() {
@@ -111,8 +111,8 @@ check_ipset() {
 install_firewall_bouncer() {
 	install -v -m 755 -D "${BIN_PATH}" "${BIN_PATH_INSTALLED}"
 	mkdir -p "${CONFIG_DIR}"
-	install -m 0600 "./config/crowdsec-firewall-bouncer.yaml" "${CONFIG_DIR}crowdsec-firewall-bouncer.yaml"
-	CFG=${CONFIG_DIR} PID=${PID_DIR} BIN=${BIN_PATH_INSTALLED} envsubst < ./config/crowdsec-firewall-bouncer.service > "${SYSTEMD_PATH_FILE}"
+	install -m 0600 "./config/crowdsec-firewall-bouncer-oht.yaml" "${CONFIG_DIR}crowdsec-firewall-bouncer-oht.yaml"
+	CFG=${CONFIG_DIR} PID=${PID_DIR} BIN=${BIN_PATH_INSTALLED} envsubst < ./config/crowdsec-firewall-bouncer-oht.service > "${SYSTEMD_PATH_FILE}"
 	systemctl daemon-reload
 }
 
@@ -133,15 +133,15 @@ gen_config_file
 if command -v "$CSCLI" >/dev/null; then
     PORT=$(cscli config show --key "Config.API.Server.ListenURI"|cut -d ":" -f2)
     if [ ! -z "$PORT" ]; then
-       sed -i "s/localhost:8080/127.0.0.1:${PORT}/g" "${CONFIG_DIR}crowdsec-firewall-bouncer.yaml"
-       sed -i "s/127.0.0.1:8080/127.0.0.1:${PORT}/g" "${CONFIG_DIR}crowdsec-firewall-bouncer.yaml"
+       sed -i "s/localhost:8080/127.0.0.1:${PORT}/g" "${CONFIG_DIR}crowdsec-firewall-bouncer-oht.yaml"
+       sed -i "s/127.0.0.1:8080/127.0.0.1:${PORT}/g" "${CONFIG_DIR}crowdsec-firewall-bouncer-oht.yaml"
     fi
 fi
 
-systemctl enable crowdsec-firewall-bouncer.service
+systemctl enable crowdsec-firewall-bouncer-oht.service
 if [ "$READY" = "yes" ]; then
-    systemctl start crowdsec-firewall-bouncer.service
+    systemctl start crowdsec-firewall-bouncer-oht.service
 else
-    echo "service not started. You need to get an API key and configure it in ${CONFIG_DIR}crowdsec-firewall-bouncer.yaml"
+    echo "service not started. You need to get an API key and configure it in ${CONFIG_DIR}crowdsec-firewall-bouncer-oht.yaml"
 fi
 echo "The firewall-bouncer service has been installed!"

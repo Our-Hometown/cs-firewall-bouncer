@@ -1,19 +1,19 @@
-Source: crowdsec-firewall-bouncer
+Source: crowdsec-firewall-bouncer-oht
 Maintainer: Crowdsec Team <debian@crowdsec.net>
 Build-Depends: debhelper, jq, bash, git
 
 
-Package: crowdsec-firewall-bouncer-iptables
+Package: crowdsec-firewall-bouncer-oht-iptables
 Architecture: any
 Description: Firewall bouncer for Crowdsec (iptables+ipset)
 Depends: iptables, ipset, gettext-base
-Replaces: crowdsec-firewall-bouncer
-Conflicts: crowdsec-firewall-bouncer-nftables
+Replaces: crowdsec-firewall-bouncer-oht
+Conflicts: crowdsec-firewall-bouncer-oht-nftables
 
-Package: crowdsec-firewall-bouncer-nftables
+Package: crowdsec-firewall-bouncer-oht-nftables
 Architecture: any
 Description: Firewall bouncer for Crowdsec (nftables)
 Depends: nftables, gettext-base
-Replaces: crowdsec-firewall-bouncer
-Conflicts: crowdsec-firewall-bouncer-iptables
+Replaces: crowdsec-firewall-bouncer-oht
+Conflicts: crowdsec-firewall-bouncer-oht-iptables
 

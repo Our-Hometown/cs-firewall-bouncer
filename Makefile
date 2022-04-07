@@ -20,7 +20,7 @@ LDFLAGS_STATIC=-s -w -extldflags '-static' $(LDFLAGS_VARS)
 
 PREFIX?="/"
 PID_DIR = $(PREFIX)"/var/run/"
-BINARY_NAME=crowdsec-firewall-bouncer
+BINARY_NAME=crowdsec-firewall-bouncer-oht
 
 #Golang version info
 GO_MAJOR_VERSION = $(shell go version | cut -c 14- | cut -d' ' -f1 | cut -d'.' -f1)
@@ -29,7 +29,7 @@ MINIMUM_SUPPORTED_GO_MAJOR_VERSION = 1
 MINIMUM_SUPPORTED_GO_MINOR_VERSION = 13
 GO_VERSION_VALIDATION_ERR_MSG = Golang version ($(BUILD_GOVERSION)) is not supported, please use at least $(MINIMUM_SUPPORTED_GO_MAJOR_VERSION).$(MINIMUM_SUPPORTED_GO_MINOR_VERSION)
 
-RELDIR = "crowdsec-firewall-bouncer-${BUILD_VERSION}"
+RELDIR = "crowdsec-firewall-bouncer-oht-${BUILD_VERSION}"
 
 PYTHON=python3
 PIP=pip
@@ -64,7 +64,7 @@ test:
 clean:
 	@$(RM) $(BINARY_NAME)
 	@$(RM) -r ${RELDIR}
-	@$(RM) crowdsec-firewall-bouncer.tgz
+	@$(RM) crowdsec-firewall-bouncer-oht.tgz
 	@$(RM) -r tests/venv
 
 .PHONY: func-tests
@@ -89,5 +89,5 @@ release: build
 	@chmod +x $(RELDIR)/install.sh
 	@chmod +x $(RELDIR)/uninstall.sh
 	@chmod +x $(RELDIR)/upgrade.sh
-	@tar cvzf crowdsec-firewall-bouncer.tgz $(RELDIR)
+	@tar cvzf crowdsec-firewall-bouncer-oht.tgz $(RELDIR)
 

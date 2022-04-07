@@ -24,8 +24,8 @@ if [ "$1" = "configure" ]; then
     fi
 
     TMP=`mktemp -p /tmp/`
-    install -m 0600 /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml ${TMP}
-    BACKEND=iptables API_KEY=${API_KEY} envsubst < ${TMP} | install -m 0600 /dev/stdin /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml
+    install -m 0600 /etc/crowdsec/bouncers/crowdsec-firewall-bouncer-oht.yaml ${TMP}
+    BACKEND=iptables API_KEY=${API_KEY} envsubst < ${TMP} | install -m 0600 /dev/stdin /etc/crowdsec/bouncers/crowdsec-firewall-bouncer-oht.yaml
     rm ${TMP}
 
 else 
@@ -36,16 +36,16 @@ fi
 if command -v "$CSCLI" >/dev/null; then
     PORT=$(cscli config show --key "Config.API.Server.ListenURI"|cut -d ":" -f2)
     if [ ! -z "$PORT" ]; then
-       sed -i "s/localhost:8080/127.0.0.1:${PORT}/g" /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml
-       sed -i "s/127.0.0.1:8080/127.0.0.1:${PORT}/g" /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml
+       sed -i "s/localhost:8080/127.0.0.1:${PORT}/g" /etc/crowdsec/bouncers/crowdsec-firewall-bouncer-oht.yaml
+       sed -i "s/127.0.0.1:8080/127.0.0.1:${PORT}/g" /etc/crowdsec/bouncers/crowdsec-firewall-bouncer-oht.yaml
     fi
 fi
 
-systemctl --quiet is-enabled crowdsec-firewall-bouncer || systemctl unmask crowdsec-firewall-bouncer && systemctl enable crowdsec-firewall-bouncer
+systemctl --quiet is-enabled crowdsec-firewall-bouncer-oht || systemctl unmask crowdsec-firewall-bouncer-oht && systemctl enable crowdsec-firewall-bouncer-oht
 
 if [ ${START} -eq 0 ] ; then
     echo "no api key was generated, won't start service"
 else 
-    systemctl start crowdsec-firewall-bouncer
+    systemctl start crowdsec-firewall-bouncer-oht
 fi
 

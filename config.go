@@ -91,7 +91,7 @@ func newConfig(configPath string) (*bouncerConfig, error) {
 	}
 	// for config file backward compatibility
 	if config.BlacklistsIpv4 == "" {
-		config.BlacklistsIpv4 = "crowdsec-blacklists"
+		config.BlacklistsIpv4 = "crowdsec_geo_combineds"
 	}
 	if config.BlacklistsIpv6 == "" {
 		config.BlacklistsIpv6 = "crowdsec6-blacklists"
@@ -183,7 +183,7 @@ func configureLogging(config *bouncerConfig) {
 			_compress = *config.CompressLogs
 		}
 		LogOutput = &lumberjack.Logger{
-			Filename:   config.LogDir + "/crowdsec-firewall-bouncer.log",
+			Filename:   config.LogDir + "/crowdsec-firewall-bouncer-oht.log",
 			MaxSize:    _maxsize, //megabytes
 			MaxBackups: _maxfiles,
 			MaxAge:     _maxage,   //days

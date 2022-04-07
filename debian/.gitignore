@@ -1,6 +1,6 @@
 # Generated during the build
-/crowdsec-firewall-bouncer-iptables
-/crowdsec-firewall-bouncer-nftables
+/crowdsec-firewall-bouncer-oht-iptables
+/crowdsec-firewall-bouncer-oht-nftables
 /files
 /*.substvars
 /*.debhelper

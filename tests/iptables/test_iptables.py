@@ -11,10 +11,10 @@ from tests.utils import generate_n_decisions, run_cmd
 
 SCRIPT_DIR = Path(os.path.dirname(os.path.realpath(__file__)))
 PROJECT_ROOT = SCRIPT_DIR.parent.parent
-BINARY_PATH = PROJECT_ROOT.joinpath("crowdsec-firewall-bouncer")
-CONFIG_PATH = SCRIPT_DIR.joinpath("crowdsec-firewall-bouncer.yaml")
+BINARY_PATH = PROJECT_ROOT.joinpath("crowdsec-firewall-bouncer-oht")
+CONFIG_PATH = SCRIPT_DIR.joinpath("crowdsec-firewall-bouncer-oht.yaml")
 
-SET_NAME_IPV4 = "crowdsec-blacklists"
+SET_NAME_IPV4 = "crowdsec_geo_combineds"
 SET_NAME_IPV6 = "crowdsec6-blacklists"
 
 CHAIN_NAME = "INPUT"

@@ -18,7 +18,7 @@ import (
 )
 
 const (
-	name = "crowdsec-firewall-bouncer"
+	name = "crowdsec-firewall-bouncer-oht"
 )
 
 var t tomb.Tomb
@@ -72,7 +72,7 @@ func inSlice(s string, slice []string) bool {
 
 func main() {
 	var err error
-	configPath := flag.String("c", "", "path to crowdsec-firewall-bouncer.yaml")
+	configPath := flag.String("c", "", "path to crowdsec-firewall-bouncer-oht.yaml")
 	verbose := flag.Bool("v", false, "set verbose mode")
 	bouncerVersion := flag.Bool("V", false, "display version and exit")
 	testConfig := flag.Bool("t", false, "test config and exit")
@@ -92,7 +92,7 @@ func main() {
 		},
 	})
 
-	log.Infof("crowdsec-firewall-bouncer %s", version.VersionStr())
+	log.Infof("crowdsec-firewall-bouncer-oht %s", version.VersionStr())
 
 	if configPath == nil || *configPath == "" {
 		log.Fatalf("configuration file is required")

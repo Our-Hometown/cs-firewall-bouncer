@@ -12,10 +12,10 @@
 </p>
 
 
-# crowdsec-firewall-bouncer
+# crowdsec-firewall-bouncer-oht
 Crowdsec bouncer written in golang for firewalls.
 
-crowdsec-firewall-bouncer will fetch new and old decisions from a CrowdSec API to add them in a blocklist used by supported firewalls.
+crowdsec-firewall-bouncer-oht will fetch new and old decisions from a CrowdSec API to add them in a blocklist used by supported firewalls.
 
 Supported firewalls:
  - iptables (IPv4 :heavy_check_mark: / IPv6 :heavy_check_mark: )

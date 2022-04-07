@@ -1,4 +1,4 @@
-Name:           crowdsec-firewall-bouncer-iptables
+Name:           crowdsec-firewall-bouncer-oht-iptables
 Version:        %(echo $VERSION)
 Release:        %(echo $PACKAGE_NUMBER)%{?dist}
 Summary:      Firewall bouncer for Crowdsec (iptables+ipset configuration)
@@ -6,7 +6,7 @@ Summary:      Firewall bouncer for Crowdsec (iptables+ipset configuration)
 License:        MIT
 URL:            https://crowdsec.net
 Source0:        https://github.com/crowdsecurity/%{name}/archive/v%(echo $VERSION).tar.gz
-Source1:        80-crowdsec-firewall-bouncer.preset
+Source1:        80-crowdsec-firewall-bouncer-oht.preset
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  git
@@ -23,11 +23,11 @@ Requires: iptables,ipset,gettext,ipset-libs
 %define version_number  %(echo $VERSION)
 %define releasever  %(echo $RELEASEVER)
 %global local_version v%{version_number}-%{releasever}-rpm
-%global name crowdsec-firewall-bouncer
+%global name crowdsec-firewall-bouncer-oht
 %global __mangle_shebangs_exclude_from /usr/bin/env
 
 %prep
-%setup -q -T -b 0 -n crowdsec-firewall-bouncer-%{version_number}
+%setup -q -T -b 0 -n crowdsec-firewall-bouncer-oht-%{version_number}
 
 %build
 BUILD_VERSION=%{local_version} make
@@ -52,7 +52,7 @@ rm -rf %{buildroot}
 /usr/bin/%{name}
 %{_unitdir}/%{name}.service
 %config(noreplace) /etc/crowdsec/bouncers/%{name}.yaml 
-%config(noreplace) %{_presetdir}/80-crowdsec-firewall-bouncer.preset
+%config(noreplace) %{_presetdir}/80-crowdsec-firewall-bouncer-oht.preset
 
 %post -p /bin/bash
 
@@ -80,21 +80,21 @@ if [ "$1" == "1" ] ; then
     fi
 
     TMP=`mktemp -p /tmp/`
-    install -m 0600 /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml ${TMP}
-    BACKEND=iptables API_KEY=${API_KEY} envsubst < ${TMP} | install -m 0600 /dev/stdin /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml
+    install -m 0600 /etc/crowdsec/bouncers/crowdsec-firewall-bouncer-oht.yaml ${TMP}
+    BACKEND=iptables API_KEY=${API_KEY} envsubst < ${TMP} | install -m 0600 /dev/stdin /etc/crowdsec/bouncers/crowdsec-firewall-bouncer-oht.yaml
     rm ${TMP}
 else 
     START=1
 fi
 
-%systemd_post crowdsec-firewall-bouncer.service
+%systemd_post crowdsec-firewall-bouncer-oht.service
 
 if command -v "$CSCLI" >/dev/null; then
     START=1
     PORT=$(cscli config show --key "Config.API.Server.ListenURI"|cut -d ":" -f2)
     if [ ! -z "$PORT" ]; then     
-       sed -i "s/localhost:8080/127.0.0.1:${PORT}/g" /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml
-       sed -i "s/127.0.0.1:8080/127.0.0.1:${PORT}/g" /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml
+       sed -i "s/localhost:8080/127.0.0.1:${PORT}/g" /etc/crowdsec/bouncers/crowdsec-firewall-bouncer-oht.yaml
+       sed -i "s/127.0.0.1:8080/127.0.0.1:${PORT}/g" /etc/crowdsec/bouncers/crowdsec-firewall-bouncer-oht.yaml
     fi
 fi
 
@@ -103,9 +103,9 @@ if [ ${START} -eq 0 ] ; then
     echo "no api key was generated, won't start or enanble service"
 else 
     %if 0%{?fc35}
-    systemctl enable crowdsec-firewall-bouncer 
+    systemctl enable crowdsec-firewall-bouncer-oht 
     %endif
-    systemctl start crowdsec-firewall-bouncer
+    systemctl start crowdsec-firewall-bouncer-oht
 fi
 
 %changelog
@@ -114,17 +114,17 @@ fi
 
 
 
-%package -n crowdsec-firewall-bouncer-nftables
+%package -n crowdsec-firewall-bouncer-oht-nftables
 Summary:      Firewall bouncer for Crowdsec (nftables configuration)
 Requires: nftables,gettext
-%description -n crowdsec-firewall-bouncer-nftables
+%description -n crowdsec-firewall-bouncer-oht-nftables
 
-%files -n crowdsec-firewall-bouncer-nftables
+%files -n crowdsec-firewall-bouncer-oht-nftables
 /usr/bin/%{name}
 %{_unitdir}/%{name}.service
 %config(noreplace) /etc/crowdsec/bouncers/%{name}.yaml 
 
-%post -p /bin/bash -n crowdsec-firewall-bouncer-nftables
+%post -p /bin/bash -n crowdsec-firewall-bouncer-oht-nftables
 
 systemctl daemon-reload
 
@@ -148,20 +148,20 @@ if [ "$1" == "1" ] ; then
     fi
 
     TMP=`mktemp -p /tmp/`
-    install -m 0600 /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml ${TMP}
-    BACKEND=nftables API_KEY=${API_KEY} envsubst < ${TMP} | install -m 0600 /dev/stdin /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml
+    install -m 0600 /etc/crowdsec/bouncers/crowdsec-firewall-bouncer-oht.yaml ${TMP}
+    BACKEND=nftables API_KEY=${API_KEY} envsubst < ${TMP} | install -m 0600 /dev/stdin /etc/crowdsec/bouncers/crowdsec-firewall-bouncer-oht.yaml
     rm ${TMP}
 else 
     START=1
 fi
 
-%systemd_post crowdsec-firewall-bouncer.service
+%systemd_post crowdsec-firewall-bouncer-oht.service
 
 if command -v "$CSCLI" >/dev/null; then
     PORT=$(cscli config show --key "Config.API.Server.ListenURI"|cut -d ":" -f2)
     if [ ! -z "$PORT" ]; then     
-       sed -i "s/localhost:8080/127.0.0.1:${PORT}/g" /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml
-       sed -i "s/127.0.0.1:8080/127.0.0.1:${PORT}/g" /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml
+       sed -i "s/localhost:8080/127.0.0.1:${PORT}/g" /etc/crowdsec/bouncers/crowdsec-firewall-bouncer-oht.yaml
+       sed -i "s/127.0.0.1:8080/127.0.0.1:${PORT}/g" /etc/crowdsec/bouncers/crowdsec-firewall-bouncer-oht.yaml
     fi
 fi
 
@@ -170,38 +170,38 @@ if [ ${START} -eq 0 ] ; then
     echo "no api key was generated, won't start or enanble service"
 else 
     %if 0%{?fc35}
-    systemctl enable crowdsec-firewall-bouncer 
+    systemctl enable crowdsec-firewall-bouncer-oht 
     %endif
-    systemctl start crowdsec-firewall-bouncer
+    systemctl start crowdsec-firewall-bouncer-oht
 fi
 
 
 %preun -p /bin/bash
 
 if [ "$1" == "0" ] ; then
-    systemctl stop crowdsec-firewall-bouncer || echo "cannot stop service"
-    systemctl disable crowdsec-firewall-bouncer || echo "cannot disable service"
+    systemctl stop crowdsec-firewall-bouncer-oht || echo "cannot stop service"
+    systemctl disable crowdsec-firewall-bouncer-oht || echo "cannot disable service"
 fi
 
-%preun -p /bin/bash -n crowdsec-firewall-bouncer-nftables
+%preun -p /bin/bash -n crowdsec-firewall-bouncer-oht-nftables
 
 if [ "$1" == "0" ] ; then
-    systemctl stop crowdsec-firewall-bouncer || echo "cannot stop service"
-    systemctl disable crowdsec-firewall-bouncer || echo "cannot disable service"
+    systemctl stop crowdsec-firewall-bouncer-oht || echo "cannot stop service"
+    systemctl disable crowdsec-firewall-bouncer-oht || echo "cannot disable service"
 fi
 
 
 %postun -p /bin/bash
 
 if [ "$1" == "1" ] ; then
-    systemctl restart  crowdsec-firewall-bouncer || echo "cannot restart service"
+    systemctl restart  crowdsec-firewall-bouncer-oht || echo "cannot restart service"
 fi
 
 
-%postun -p /bin/bash -n crowdsec-firewall-bouncer-nftables
+%postun -p /bin/bash -n crowdsec-firewall-bouncer-oht-nftables
 
 if [ "$1" == "1" ] ; then
-    systemctl restart  crowdsec-firewall-bouncer || echo "cannot restart service"
+    systemctl restart  crowdsec-firewall-bouncer-oht || echo "cannot restart service"
 fi
 
 
